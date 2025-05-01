@@ -11,12 +11,70 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.',
     'The only way to go fast, is to go well.'
   ]
-   
+
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
+  const [mostPopular, setPopular] = useState(0)
+
+  
+
+  const addQuote = () => {
+    const randomNum = Math.floor(Math.random() * anecdotes.length)
+    setSelected(randomNum)
+  };
+
+  const addVote = () => {
+    const copy = [...votes]
+    copy[selected] += 1
+    setVotes(copy)
+
+    const newArr = [...copy]
+    let maxVotes = 0;
+    let maxIndex = 0;
+    for (let i = 0; i < newArr.length; i++) {
+      if (newArr[i] > maxVotes) {
+        maxVotes = newArr[i];
+        maxIndex = i;
+      }
+    }
+    setPopular(maxIndex);
+  }
+   
 
   return (
     <div>
-      {anecdotes[selected]}
+      <ShowQuote selected={selected} anecdotes={anecdotes} votes={votes}/>
+      <Button onClick={addQuote} text={"next anecdote"}/>
+      <Button onClick={addVote} text={"vote"}/>
+      <ShowPopular text={"Anecdote with most votes"} anecdotes={anecdotes} popular={mostPopular}/>
+    </div>
+  )
+}
+
+const ShowPopular = ({text, anecdotes, popular}) => {
+  return (
+    <div>
+      <h1>{text}</h1>
+      <p>{anecdotes[popular]}</p>
+    </div>
+  )
+}
+
+const ShowQuote = ({selected, anecdotes, votes}) => {
+  return (
+    <div>
+      <p>{anecdotes[selected]}</p>
+      <p>has {votes[selected]} votes</p>
+    </div>
+  )
+}
+
+const Button = ({onClick, text}) => {
+  return (
+    <div>
+      <button onClick={onClick}>
+        {text}
+      </button>
     </div>
   )
 }
